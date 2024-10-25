@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 import os
 from dotenv import load_dotenv
 import requests
+from urllib.parse import urlparse
 
 load_dotenv()
 
@@ -15,21 +16,22 @@ EMAIL_ADDRESS = os.getenv('EMAIL_ADDRESS')
 APP_PASSWORD = os.getenv('APP_PASSWORD')
 
 # get list of email bodies from INBOX folder
-with MailBox($IMAP_SERVER).login($EMAIL_ADDRESS, $APP_PASSWORD, 'INBOX') as mailbox:
+with MailBox(IMAP_SERVER).login(EMAIL_ADDRESS, APP_PASSWORD, 'INBOX') as mailbox:
     bodies = [msg.html for msg in mailbox.fetch(AND(subject='your email subject'), reverse = True)]
    
-
+# Extract URLs
 soup = BeautifulSoup(str(bodies))
 links = []
 for link in soup.findAll('a', attrs={'href': re.compile("^https://")}):
     links.append(link.get('href'))
-links # in this you will have to check the link number starting from 0. 
 
-result = links[5] # mine was 5th
-result
+# Delete every third link, only the first 2 of each message are valid
+while links: [del links[index] for index in reversed(range(2, len(my_list), 3))]
 
-resp = requests.get(result)
+for result in links:    
+    resp = requests.get(result)
+    output = open(os.path.basename(result.path), 'wb')
+    output.write(resp.content)
+    output.close()
 
-output = open('test.csv', 'wb')
-output.write(resp.content)
-output.close()
+print ('All done!')
