@@ -1,3 +1,4 @@
 beautifulsoup4
 imap-tools
 requests
+python-dotenv

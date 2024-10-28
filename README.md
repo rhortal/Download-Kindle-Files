@@ -4,7 +4,9 @@ Download files sent by email from my Kindle
 
 Adapted from: https://stackoverflow.com/questions/70439776/how-to-use-python-to-click-on-an-email-link-to-download-data
 
-Requs: python3 -m pip freeze > requirements.txt
+Amazon doesn't like atuomated access trying selenium as in: https://scrapingant.com/blog/selenium-download-file
+
+Reqs: python3 -m pip freeze > requirements.txt
 
 # Set up
 
