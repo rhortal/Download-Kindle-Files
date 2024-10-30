@@ -20,7 +20,7 @@ APP_PASSWORD = os.getenv('APP_PASSWORD')
 ATTACHMENT_PATH = os.getenv('ATTACHMENT_PATH', 'attachments') # path to save attachments in the current directory.
 
 # How many days back?
-DAYS_BACK = os.getenv('DAYS_BACK', '10')
+DAYS_BACK = os.getenv('DAYS_BACK', '7') # Default to one week. Links expire in 7 days
 
 # Calculate the date range for today and yesterday
 today = datetime.now()
