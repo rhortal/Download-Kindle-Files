@@ -4,11 +4,11 @@ Download files sent by email from my Kindle
 
 Adapted from: https://stackoverflow.com/questions/70439776/how-to-use-python-to-click-on-an-email-link-to-download-data and informed by https://realpython.com/python-download-file-from-url
 
-# Set up
+## Set up
 
 Copy env.example to .venv and set up your values for email and password
 
-# Run
+## Run
 
 Running `run.sh` will set things up nicely as long as you have python installed in your system
 
