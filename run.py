@@ -65,30 +65,38 @@ with MailBox(IMAP_SERVER).login(EMAIL_ADDRESS, APP_PASSWORD, 'INBOX') as mailbox
         start = subject.find('\"') + 1  # +1 to exclude the first quote
         end = subject.find('\"', start)  # Find the next quote after the start
         att_names.append(subject[start:end])
-        # print ("Extracted" + subject[start:end])
-    
+        print ("Extracted: " + subject[start:end])
+
 # Extract URLs
 soup = BeautifulSoup(str(bodies),features="html.parser")
 links = []
 for link in soup.findAll('a', attrs={'href': re.compile("^https://")}):
     links.append(link.get('href'))
 
+print("Downloading " + str(len(links)) + " links from " + str(len(subjects)) + " messages")
+exit()
+
+# Replace the logic above and below - make a data structure with the name, the html and the links
+
 index = 0
 for result in links:
-    # print ('Geting ' + result)
-    resp = requests.get(result)
-    extension = ".txt" if index % 3 == 0 else ".pdf"
-    adjust = 0 if index % 3 == 0 else 1
-    # print (extension)
     if index %3 == 2:
-            continue # Every third link is a link to T&Cs
-    filename = att_names[index-adjust] + extension # os.path.basename(result)
+        index +=1
+        print ("Jump!")
+        continue # Every third link is a link to T&Cs
+    # print ('Geting ' + result)
+    adjust = 0 if index % 3 == 0 else 1
+    extension = ".txt" if index % 3 == 0 else ".pdf"
+    filename = att_names[int((index/3))-adjust] + extension # os.path.basename(result)
     filename = filename.replace('/', '-')
-    print (filename+" downloaded")
+    # print (extension)
+    print ("Downloading "+ filename)
+    resp = requests.get(result)
     os.makedirs(os.path.dirname(f'{ATTACHMENT_PATH}/{filename}'), exist_ok=True)
     output = open(f'{ATTACHMENT_PATH}/{filename}' , 'wb')
     output.write(resp.content)
     output.close()
+    print ("Downloaded "+ filename)
     index += 1   # Increase the counter for each downloaded file.
 
 # print ("All done!")
