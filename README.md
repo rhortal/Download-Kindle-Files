@@ -15,7 +15,9 @@ Running `run.sh` will set things up nicely as long as you have python installed 
 For manual installs:
 
 Set up pip envirnment: `python3 -m venv .venv`
+
 Activate environment: `source .venv/bin/activate`
+
 Install requirements: `python3 -m pip install -r requirements.txt`
 
 Run the program: `run.py`
