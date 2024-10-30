@@ -6,6 +6,8 @@ Adapted from: https://stackoverflow.com/questions/70439776/how-to-use-python-to-
 
 Amazon doesn't like atuomated access trying selenium as in: https://scrapingant.com/blog/selenium-download-file
 
+Or test this approach to figure it out manually first: https://realpython.com/python-download-file-from-url
+
 Reqs: python3 -m pip freeze > requirements.txt
 
 # Set up
