@@ -97,11 +97,14 @@ for email in emails:
         if index == 2:
                 continue
         extension = ".txt" if index % 3 == 0 else ".pdf"
-        filename = email.filename() + extension # os.path.basename(result)
-    # print (extension)
+        filename = email.filename() + extension # os.path.basename(result)  
+        file_path = f'{ATTACHMENT_PATH}/{filename}'
+        if os.path.isfile(file_path):
+            print (filename + " already exists")
+            continue
         print ("Downloading "+ filename)
         resp = requests.get(link)
-        os.makedirs(os.path.dirname(f'{ATTACHMENT_PATH}/{filename}'), exist_ok=True)
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
         output = open(f'{ATTACHMENT_PATH}/{filename}' , 'wb')
         output.write(resp.content)
         output.close()
