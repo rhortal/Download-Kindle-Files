@@ -163,3 +163,4 @@ cython_debug/
 # Attachments download by the program
 attachments/
 *.pdf
+.DS_Store
