@@ -11,6 +11,23 @@ from urllib.parse import urlparse
 import re
 from pathlib import Path
 
+class Email:
+    def __init__(self, subject, html_content):
+        self.subject = subject
+        self.html_content = html_content
+        self.links = self.extract_links()
+
+    def extract_links(self):
+        #Extracts all links from the HTML content.
+        soup = BeautifulSoup(self.html_content, 'html.parser')
+        return [a['href'] for a in soup.find_all('a', href=True)]
+    
+    def filename(self):
+        #Creates a string-safe filename to use for saving
+        start = self.subject.find('\"') + 1  # +1 to exclude the first quote
+        end = self.subject.find('\"', start)  # Find the next quote after the start
+        return self.subject[start:end].replace('/', '-')
+        
 load_dotenv()
 
 # IMAP server settings
@@ -47,7 +64,7 @@ with MailBox(IMAP_SERVER).login(EMAIL_ADDRESS, APP_PASSWORD, 'INBOX') as mailbox
         )
     ]
 
-    if TESTING:
+"""     if TESTING:
         print("Test output")
         # Print the subjects of the fetched emails
         for msg in fetched_emails:
@@ -55,48 +72,40 @@ with MailBox(IMAP_SERVER).login(EMAIL_ADDRESS, APP_PASSWORD, 'INBOX') as mailbox
         
         # Exit after printing subjects if needed for testing purposes
         exit()
-
+"""
     # Process the bodies of the fetched emails normally
-    bodies = [msg.html for msg in fetched_emails]
-    subjects = [msg.subject for msg in fetched_emails]
-    # print ("Subject: " + subjects[0])
-    att_names = []
-    for subject in subjects:
-        start = subject.find('\"') + 1  # +1 to exclude the first quote
-        end = subject.find('\"', start)  # Find the next quote after the start
-        att_names.append(subject[start:end])
-        print ("Extracted: " + subject[start:end])
+emails = []
+for msg in fetched_emails:
+    email = Email(subject=msg.subject, html_content=msg.html)
+    emails.append(email) 
 
-# Extract URLs
-soup = BeautifulSoup(str(bodies),features="html.parser")
-links = []
-for link in soup.findAll('a', attrs={'href': re.compile("^https://")}):
-    links.append(link.get('href'))
+if TESTING:
+    # Example: Printing the email records
+    for email in emails:
+        print(f"Subject: {email.subject}")
+        print(f"Links: {email.links}")
+        print(f"Filename: {email.filename()}")
+        print()
+    exit()
 
-print("Downloading " + str(len(links)) + " links from " + str(len(subjects)) + " messages")
-exit()
 
-# Replace the logic above and below - make a data structure with the name, the html and the links
+print("Downloading from " + str(len(emails)) + " messages")
 
-index = 0
-for result in links:
-    if index %3 == 2:
-        index +=1
-        print ("Jump!")
-        continue # Every third link is a link to T&Cs
-    # print ('Geting ' + result)
-    adjust = 0 if index % 3 == 0 else 1
-    extension = ".txt" if index % 3 == 0 else ".pdf"
-    filename = att_names[int((index/3))-adjust] + extension # os.path.basename(result)
-    filename = filename.replace('/', '-')
+for email in emails:
+    index = 0
+    for link in email.extract_links():
+        if index == 2:
+                continue
+        extension = ".txt" if index % 3 == 0 else ".pdf"
+        filename = email.filename() + extension # os.path.basename(result)
     # print (extension)
-    print ("Downloading "+ filename)
-    resp = requests.get(result)
-    os.makedirs(os.path.dirname(f'{ATTACHMENT_PATH}/{filename}'), exist_ok=True)
-    output = open(f'{ATTACHMENT_PATH}/{filename}' , 'wb')
-    output.write(resp.content)
-    output.close()
-    print ("Downloaded "+ filename)
-    index += 1   # Increase the counter for each downloaded file.
+        print ("Downloading "+ filename)
+        resp = requests.get(link)
+        os.makedirs(os.path.dirname(f'{ATTACHMENT_PATH}/{filename}'), exist_ok=True)
+        output = open(f'{ATTACHMENT_PATH}/{filename}' , 'wb')
+        output.write(resp.content)
+        output.close()
+        print ("Downloaded "+ filename)
+        index += 1   # Increase the counter for each downloaded file.
 
 # print ("All done!")
