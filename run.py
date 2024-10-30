@@ -58,29 +58,37 @@ with MailBox(IMAP_SERVER).login(EMAIL_ADDRESS, APP_PASSWORD, 'INBOX') as mailbox
 
     # Process the bodies of the fetched emails normally
     bodies = [msg.html for msg in fetched_emails]
-   
+    subjects = [msg.subject for msg in fetched_emails]
+    # print ("Subject: " + subjects[0])
+    att_names = []
+    for subject in subjects:
+        start = subject.find('\"') + 1  # +1 to exclude the first quote
+        end = subject.find('\"', start)  # Find the next quote after the start
+        att_names.append(subject[start:end])
+        # print ("Extracted" + subject[start:end])
+    
 # Extract URLs
 soup = BeautifulSoup(str(bodies),features="html.parser")
 links = []
 for link in soup.findAll('a', attrs={'href': re.compile("^https://")}):
     links.append(link.get('href'))
 
-# Delete every third link, only the first 2 of each message are valid
-""" while links:
-    for index in reversed(range(2, len(links), 3)):
-        del links[index]# Best replace this with something that looks for the right string on the URL
-        print ('deleted link ' + str(index)) """
-
 index = 0
 for result in links:
-    print ('Geting ' + result)
+    # print ('Geting ' + result)
     resp = requests.get(result)
-    filename = "attachment" + str(index) + ".pdf" # os.path.basename(result)
-    print (filename)
+    extension = ".txt" if index % 3 == 0 else ".pdf"
+    adjust = 0 if index % 3 == 0 else 1
+    # print (extension)
+    if index %3 == 2:
+            continue # Every third link is a link to T&Cs
+    filename = att_names[index-adjust] + extension # os.path.basename(result)
+    filename = filename.replace('/', '-')
+    print (filename+" downloaded")
     os.makedirs(os.path.dirname(f'{ATTACHMENT_PATH}/{filename}'), exist_ok=True)
     output = open(f'{ATTACHMENT_PATH}/{filename}' , 'wb')
     output.write(resp.content)
     output.close()
-    index += 1   # Increase the counter for each downloaded file (PDFs are saved in separate files with incrementing names). This is to avoid overwriting existing PDF's when we start downloading again from scratch, which would be a waste of time. Also it will make sure that all pdf attachments get stored separately and not mixed together
+    index += 1   # Increase the counter for each downloaded file.
 
-print ('All done!')
+# print ("All done!")

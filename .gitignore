@@ -162,3 +162,4 @@ cython_debug/
 
 # Attachments download by the program
 attachments/
+*.pdf
