@@ -10,7 +10,7 @@ import requests
 from urllib.parse import urlparse
 import re
 from pathlib import Path
-
+from call_rclone import call_rclone
 class Email:
     def __init__(self, subject, html_content):
         self.subject = subject
@@ -110,5 +110,11 @@ for email in emails:
         output.close()
         print ("Downloaded "+ filename)
         index += 1   # Increase the counter for each downloaded file.
+
+RCLONE = os.getenv('RCLONE')
+if RCLONE: # If rclone is set, upload to cloud storage using it...
+    RCLONE_PATH = os.getenv('RCLONE_PATH')
+    # use rclone to copy files to cloud 
+    call_rclone('copy', ATTACHMENT_PATH + ' ' + RCLONE_PATH)
 
 # print ("All done!")
