@@ -115,6 +115,6 @@ RCLONE = os.getenv('RCLONE')
 if RCLONE: # If rclone is set, upload to cloud storage using it...
     RCLONE_PATH = os.getenv('RCLONE_PATH')
     # use rclone to copy files to cloud 
-    call_rclone('copy', ATTACHMENT_PATH + ' ' + RCLONE_PATH)
+    call_rclone('copy', ATTACHMENT_PATH, RCLONE_PATH)
 
 # print ("All done!")
