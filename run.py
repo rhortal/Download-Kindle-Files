@@ -11,7 +11,7 @@ from urllib.parse import urlparse
 import re
 from pathlib import Path
 from call_rclone import call_rclone
-import classEmail
+from classEmail import Email
 
 load_dotenv()
 
