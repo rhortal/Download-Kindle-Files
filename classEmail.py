@@ -1,3 +1,5 @@
+from bs4 import BeautifulSoup
+
 class Email:
     def __init__(self, subject, html_content):
         self.subject = subject
