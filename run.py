@@ -11,23 +11,8 @@ from urllib.parse import urlparse
 import re
 from pathlib import Path
 from call_rclone import call_rclone
-class Email:
-    def __init__(self, subject, html_content):
-        self.subject = subject
-        self.html_content = html_content
-        self.links = self.extract_links()
+import classEmail
 
-    def extract_links(self):
-        #Extracts all links from the HTML content.
-        soup = BeautifulSoup(self.html_content, 'html.parser')
-        return [a['href'] for a in soup.find_all('a', href=True)]
-    
-    def filename(self):
-        #Creates a string-safe filename to use for saving
-        start = self.subject.find('\"') + 1  # +1 to exclude the first quote
-        end = self.subject.find('\"', start)  # Find the next quote after the start
-        return self.subject[start:end].replace('/', '-')
-        
 load_dotenv()
 
 # IMAP server settings
@@ -64,16 +49,7 @@ with MailBox(IMAP_SERVER).login(EMAIL_ADDRESS, APP_PASSWORD, 'INBOX') as mailbox
         )
     ]
 
-"""     if TESTING:
-        print("Test output")
-        # Print the subjects of the fetched emails
-        for msg in fetched_emails:
-            print(msg.subject)  # Print the subject of each fetched email
-        
-        # Exit after printing subjects if needed for testing purposes
-        exit()
-"""
-    # Process the bodies of the fetched emails normally
+# Process the bodies of the fetched emails
 emails = []
 for msg in fetched_emails:
     email = Email(subject=msg.subject, html_content=msg.html)
