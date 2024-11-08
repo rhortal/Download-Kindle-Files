@@ -1,4 +1,6 @@
 import subprocess
+import os
+from dotenv import load_dotenv
 
 def call_rclone(command, *args):
     """
@@ -25,5 +27,7 @@ def call_rclone(command, *args):
         
 # Example usage
 if __name__ == "__main__":
+    load_dotenv()
+    RCLONE_PATH = os.getenv('RCLONE_PATH')
     # Example: List files in a remote storage (replace 'remote:path' with your actual remote path).
-    call_rclone('ls', 'remote:path')
+    call_rclone('ls', RCLONE_PATH)
