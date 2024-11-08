@@ -10,5 +10,5 @@ if [ ! -d .venv ]; then
 fi
 
 source .venv/bin/activate
-print ("Running unit tests")
+echo "Running unit tests"
 python3 -m unittest discover -s tests -v
