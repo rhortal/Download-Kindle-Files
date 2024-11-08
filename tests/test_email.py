@@ -1,5 +1,5 @@
 import unittest
-# from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup
 from classEmail import Email
 
 class TestEmail(unittest.TestCase):

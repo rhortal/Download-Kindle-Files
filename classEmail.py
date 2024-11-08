@@ -1,3 +1,4 @@
+from bs4 import BeautifulSoup
 class Email:
     def __init__(self, subject, html_content):
         self.subject = subject
@@ -14,5 +15,3 @@ class Email:
         start = self.subject.find('\"') + 1  # +1 to exclude the first quote
         end = self.subject.find('\"', start)  # Find the next quote after the start
         return self.subject[start:end].replace('/', '-')
-
-from bs4 import BeautifulSoup
