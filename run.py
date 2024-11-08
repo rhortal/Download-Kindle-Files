@@ -2,7 +2,7 @@
 
 from imap_tools import MailBox
 from imap_tools import AND, OR, NOT
-from bs4 import BeautifulSoup
+# from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
 import os
 from dotenv import load_dotenv
